@@ -6,6 +6,11 @@ const app = express();
 //   res.send("Hello world from server 2");
 // });
 
+app.get("/user/:userId/:name/:password", (req, res) => {
+  console.log(req.params);
+  res.send({ firstName: "Tasneem ", lastName: "Aamir" });
+});
+
 app.get("/user", (req, res) => {
   res.send({ firstName: "Tasneem ", lastName: "Aamir" });
 });
