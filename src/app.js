@@ -2,20 +2,21 @@ const express = require("express");
 
 const app = express();
 
-app.use((req, res) => {
-  res.send("Hello world from server 4");
-});
+// app.use("/user", (req, res) => {
+//   res.send("Hello world from server 2");
+// });
 
-app.use("/", (req, res) => {
-  res.send("Hello world from server 3");
+app.get("/user", (req, res) => {
+  res.send({ firstName: "Tasneem ", lastName: "Aamir" });
 });
-
-app.use("/test", (req, res) => {
-  res.send("Hello world from server");
+app.post("/user", (req, res) => {
+  res.send("POST Method called succesfully !!!");
 });
-
-app.use("/hello", (req, res) => {
-  res.send("Hello world from server 2");
+app.patch("/user", (req, res) => {
+  res.send("PATCH Method called succesfully !!!");
+});
+app.delete("/user", (req, res) => {
+  res.send("DELETE Method called succesfully !!!");
 });
 
 app.listen(3000, () => {
