@@ -1,29 +1,46 @@
 const express = require("express");
 
 const app = express();
-const { adminAuth,userAuth } = require("./Middlewares/auth.js");
+// const { adminAuth,userAuth } = require("./Middlewares/auth.js");
 
-app.use("/admin", adminAuth);
 
-app.get("/admin/getAllData", (req, res) => {
-  res.send("All Data Sent");
+// ? Error handling using try catch
+app.use("/getUserData", (req, res) => {
+  // try {
+  throw new Error("rewqe");
+  res.send("User Data send");
+  // } catch (err) {
+  //   res.status(500).send("Something went wrong 2");
+  // }
 });
 
-app.get("/admin/deleteUser", (req, res) => {
-  res.send("Deleted a user");
+// ? Error handling using middleware
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("Something went wrong");
+  }
 });
+// app.use("/admin", adminAuth);
 
-app.get("/user/showData", userAuth,(req, res) => {
-  res.send("Showing the  user data ");
-});
+// app.get("/admin/getAllData", (req, res) => {
+//   res.send("All Data Sent");
+// });
 
-app.get("/admin/login", (req, res) => {
-  res.send("Logged in user");
-});
+// app.get("/admin/deleteUser", (req, res) => {
+//   res.send("Deleted a user");
+// });
 
-app.get("/admin/signup", (req, res) => {
-  res.send("SignedUp user");
-});
+// app.get("/user/showData", userAuth,(req, res) => {
+//   res.send("Showing the  user data ");
+// });
+
+// app.get("/admin/login", (req, res) => {
+//   res.send("Logged in user");
+// });
+
+// app.get("/admin/signup", (req, res) => {
+//   res.send("SignedUp user");
+// });
 // ? Middleware and request handler
 // ! using multiple route handler
 // app.use("/", (req, res, next) => {
