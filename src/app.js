@@ -1,22 +1,63 @@
 const express = require("express");
 
 const app = express();
+const { adminAuth,userAuth } = require("./Middlewares/auth.js");
+
+app.use("/admin", adminAuth);
+
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All Data Sent");
+});
+
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("Deleted a user");
+});
+
+app.get("/user/showData", userAuth,(req, res) => {
+  res.send("Showing the  user data ");
+});
+
+app.get("/admin/login", (req, res) => {
+  res.send("Logged in user");
+});
+
+app.get("/admin/signup", (req, res) => {
+  res.send("SignedUp user");
+});
+// ? Middleware and request handler
+// ! using multiple route handler
+// app.use("/", (req, res, next) => {
+//   console.log("Handling the reponse 1 !!!");
+//   next();
+// });
+
+// app.get(
+//   "/user",
+//   (req, res, next) => {
+//     console.log("handling the respons 2 !!");
+//     next();
+//   },
+//   (req, res) => {
+//     console.log("handling the response 3!!!");
+//     res.send("Respond !!!");
+//   }
+// );
 
 // ? using multiple route handler
 // ! using of next()
-app.use(
-  "/user",
-  (req, res, next) => {
-    // res.send("Hello world from server 2");
-    console.log("Respond 1");
-    next();
-    console.log("You are still here");
-  },
-  (req, res) => {
-    res.send("hello 2");
-    console.log("Respond 2");
-  }
-);
+// app.use(
+//   "/user",
+//   (req, res, next) => {
+//     // res.send("Hello world from server 2");
+//     console.log("Respond 1");
+//     next();
+//     console.log("You are still here");
+//   },
+//   (req, res) => {
+//     res.send("hello 2");
+//     console.log("Respond 2");
+//   }
+// );
 // ? using multiple route handler
 // ! using of return next()
 // app.use(
