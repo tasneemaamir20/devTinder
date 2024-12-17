@@ -1,25 +1,55 @@
 const express = require("express");
-
+const connectDB = require("./config/database");
 const app = express();
 // const { adminAuth,userAuth } = require("./Middlewares/auth.js");
+const User = require("./models/user");
 
+app.post("/signup", async (req, res) => {
+  //  Creating a new instance of the user Model
+  const user = new User({
+    firstName: "Tasneem",
+    lastName: "Aamir",
+    emailId: "tasneem@aamir.com",
+    password: "Aamir@123",
+  });
+
+  try {
+      await user.save();
+  res.send("user Added successfully");
+  }
+  catch (err) {
+    res.status(400).send("Error while saving the data" + err.message);
+  }
+  
+});
+
+connectDB()
+  .then(() => {
+    console.log("Database connection establish succesfullyy !!!");
+    app.listen(3000, () => {
+      console.log("server is running on port number 3000");
+    });
+  })
+  .catch(err => {
+    console.error("Database cannot be connect");
+  });
 
 // ? Error handling using try catch
-app.use("/getUserData", (req, res) => {
-  // try {
-  throw new Error("rewqe");
-  res.send("User Data send");
-  // } catch (err) {
-  //   res.status(500).send("Something went wrong 2");
-  // }
-});
+// app.use("/getUserData", (req, res) => {
+//   // try {
+//   throw new Error("rewqe");
+//   res.send("User Data send");
+// } catch (err) {
+//   res.status(500).send("Something went wrong 2");
+// }
+// });
 
 // ? Error handling using middleware
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("Something went wrong");
-  }
-});
+// app.use("/", (err, req, res, next) => {
+//   if (err) {
+//     res.status(500).send("Something went wrong");
+//   }
+// });
 // app.use("/admin", adminAuth);
 
 // app.get("/admin/getAllData", (req, res) => {
@@ -117,7 +147,3 @@ app.use("/", (err, req, res, next) => {
 // app.delete("/user", (req, res) => {
 //   res.send("DELETE Method called succesfully !!!");
 // });
-
-app.listen(3000, () => {
-  console.log("server is running on port number 3000");
-});
