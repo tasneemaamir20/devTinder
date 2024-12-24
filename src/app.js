@@ -4,23 +4,18 @@ const app = express();
 // const { adminAuth,userAuth } = require("./Middlewares/auth.js");
 const User = require("./models/user");
 
+app.use(express.json());
+
 app.post("/signup", async (req, res) => {
   //  Creating a new instance of the user Model
-  const user = new User({
-    firstName: "Tasneem",
-    lastName: "Aamir",
-    emailId: "tasneem@aamir.com",
-    password: "Aamir@123",
-  });
+  const user = new User(req.body);
 
   try {
-      await user.save();
-  res.send("user Added successfully");
-  }
-  catch (err) {
+    await user.save();
+    res.send("user Added successfully");
+  } catch (err) {
     res.status(400).send("Error while saving the data" + err.message);
   }
-  
 });
 
 connectDB()
