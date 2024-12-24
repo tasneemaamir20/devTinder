@@ -1,32 +1,72 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
-// const { adminAuth,userAuth } = require("./Middlewares/auth.js");
+//! const { adminAuth,userAuth } = require("./Middlewares/auth.js");
 const User = require("./models/user");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  //  Creating a new instance of the user Model
   const user = new User(req.body);
-
   try {
     await user.save();
-    res.send("user Added successfully");
+    res.send("data added succesfully");
   } catch (err) {
-    res.status(400).send("Error while saving the data" + err.message);
+    res.status(500).send("Data not added");
+  }
+});
+
+//! get user by email using findOne() method
+app.get("/user", async (req, res) => {
+  const userEmail = req.body.emailId;
+
+  try {
+    const user = await User.findOne({ emailId: userEmail });
+    if (user.length === 0) {
+      res.status(400).send("User not found");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("Something went wrong 2");
+  }
+});
+
+// ! get user with matching email using find() method by passing the email parameter in that ... 
+
+app.get("/allUser", async (req, res) => {
+  const userEmail = req.body.emailId;
+
+  try {
+    const user = await User.find({ emailId: userEmail });
+    if (user.length === 0) {
+      res.status(400).send("User not found")
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+//! Feed API - GET /feed - get all the users from the database using find()  method
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (err) {
+    res.status(400).send("Something went wrong ");
   }
 });
 
 connectDB()
   .then(() => {
-    console.log("Database connection establish succesfullyy !!!");
+    console.log("Database connection esrtablished successfully");
     app.listen(3000, () => {
       console.log("server is running on port number 3000");
     });
   })
-  .catch(err => {
-    console.error("Database cannot be connect");
+  .catch(() => {
+    console.log("Database is not connected succussfull!!!!");
   });
 
 // ? Error handling using try catch
