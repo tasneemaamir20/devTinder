@@ -33,6 +33,21 @@ app.delete("/user", async (req, res) => {
     res.status(500).send("Something went wrong");
   }
 });
+// ! find the user by email and delete it
+app.delete("/deleteUserByEmail", async (req, res) => {
+  const userEmail = req.body.emailId;
+
+  try {
+    const user = await User.findOneAndDelete({ emailId: userEmail });
+    if (!user) {
+      res.status(404).send("User not found ");
+    } else {
+      res.send("User deleted succesfully !!" + user);
+    }
+  } catch (err) {
+    res.status(500).send("Something went wrong !!!");
+  }
+});
 
 //! update data of the user
 app.patch("/user", async (req, res) => {
@@ -40,8 +55,10 @@ app.patch("/user", async (req, res) => {
   const data = req.body;
 
   try {
-    await User.findOneAndUpdate({ _id: userId }, data);
-    res.send("Data update succesfully");
+    const user = await User.findOneAndUpdate({ _id: userId }, data, {
+      returnDocument: "After",
+    });
+    res.send("Data update succesfully" + user);
   } catch (err) {
     res.status().send("Something went wrong ");
   }
