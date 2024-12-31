@@ -6,6 +6,7 @@ const User = require("./models/user");
 
 app.use(express.json());
 // ! post data to signup user
+
 app.post("/signup", async (req, res) => {
   const user = new User(req.body);
   try {
@@ -33,6 +34,7 @@ app.delete("/user", async (req, res) => {
     res.status(500).send("Something went wrong");
   }
 });
+
 // ! find the user by email and delete it
 app.delete("/deleteUserByEmail", async (req, res) => {
   const userEmail = req.body.emailId;
@@ -63,6 +65,7 @@ app.patch("/user", async (req, res) => {
     res.status().send("Something went wrong ");
   }
 });
+
 //! get user by email using findOne() method
 app.get("/user", async (req, res) => {
   const userEmail = req.body.emailId;
@@ -96,33 +99,33 @@ app.get("/user", async (req, res) => {
 //   }
 // });
 
-//! get user by using id with method findById() method withut knowing the user id by providing the email to get the id
-app.get("/userById", async (req, res) => {
-  const userEmail = req.body.emailId;
+// //! get user by using id with method findById() method withut knowing the user id by providing the email to get the id
+// app.get("/userById", async (req, res) => {
+//   const userEmail = req.body.emailId;
 
-  const userByEmail = function userByEmail() {
-    try {
-      console.log(userEmail);
-      const user = User.findOne({ emailId: userEmail });
-      return user;
-    } catch (err) {
-      return err;
-    }
-  };
-  console.log(userByEmail());
+//   const userByEmail = function userByEmail() {
+//     try {
+//       console.log(userEmail);
+//       const user = User.findOne({ emailId: userEmail });
+//       return user;
+//     } catch (err) {
+//       return err;
+//     }
+//   };
+//   console.log(userByEmail());
 
-  try {
-    console.log(userId);
-    const user = await User.findById({ _id: userId });
-    if (!user) {
-      res.send("User not found");
-    } else {
-      res.send(user);
-    }
-  } catch (err) {
-    res.status(400).send("Something went wrong 2");
-  }
-});
+//   try {
+//     console.log(userId);
+//     const user = await User.findById({ _id: userId });
+//     if (!user) {
+//       res.send("User not found");
+//     } else {
+//       res.send(user);
+//     }
+//   } catch (err) {
+//     res.status(400).send("Something went wrong 2");
+//   }
+// });
 // ! get user with matching email using find() method by passing the email parameter in that ...
 
 app.get("/allUser", async (req, res) => {
