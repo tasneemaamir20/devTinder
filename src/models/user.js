@@ -7,11 +7,13 @@ const userSchema = new Schema(
     firstName: {
       type: String,
       required: true,
+      trim: true,
       minLength: 4,
       maxLength: 50,
     },
     lastName: {
       type: String,
+      trim: true,
     },
     emailId: {
       type: String,
@@ -22,6 +24,8 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
+      required: true,
+      trim: true,
       minLength: 8,
       maxLength: 18,
     },
@@ -32,6 +36,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
+      trim: true,
       validate(value) {
         if (!["male", "female", "others"].includes(value)) {
           throw new Error("Gender data is not valid");
@@ -49,7 +54,6 @@ const userSchema = new Schema(
     },
     skills: {
       type: [String],
-      maxLength: [5],
     },
   },
   {
