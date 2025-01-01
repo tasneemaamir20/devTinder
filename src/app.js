@@ -5,15 +5,15 @@ const app = express();
 const User = require("./models/user");
 
 app.use(express.json());
-// ! post data to signup user
 
+// ! post data to signup user
 app.post("/signup", async (req, res) => {
   const user = new User(req.body);
   try {
     await user.save();
     res.send("data added succesfully");
   } catch (err) {
-    res.status(500).send("Data not added");
+    res.status(500).send("Data not added" + err);
   }
 });
 
@@ -59,10 +59,11 @@ app.patch("/user", async (req, res) => {
   try {
     const user = await User.findOneAndUpdate({ _id: userId }, data, {
       returnDocument: "After",
+      runValidators: true,
     });
     res.send("Data update succesfully" + user);
   } catch (err) {
-    res.status().send("Something went wrong ");
+    res.status(400).send("Update Failed " + err);
   }
 });
 
