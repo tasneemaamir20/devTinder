@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
+const express = require("express");
 
 const { Schema } = require("mongoose");
 var validator = require("validator");
+const app = express();
+
+app.use(express.json());
 
 const userSchema = new Schema(
   {
@@ -44,6 +48,14 @@ const userSchema = new Schema(
       type: Number,
       min: 18,
       max: 35,
+      validate(value) {
+        if (
+          // !validator.isInt(value, { min: 18, max: 40 }) &&
+          !validator.isNumeric(value)
+        ) {
+          throw new Error("Age is Invalid");
+        }
+      },
     },
     gender: {
       type: String,
@@ -62,6 +74,11 @@ const userSchema = new Schema(
       type: String,
       default: "This is the default String using default feature",
       maxLength: 100,
+      validate(value) {
+        if (!validator.isLength(value, { min: 0, max: 200 })) {
+          throw new Error("Minimize the About section");
+        }
+      },
     },
     skills: {
       type: [String],
