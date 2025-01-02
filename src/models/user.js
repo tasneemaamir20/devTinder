@@ -6,7 +6,6 @@ var validator = require("validator");
 const app = express();
 
 app.use(express.json());
-
 const userSchema = new Schema(
   {
     firstName: {
@@ -26,8 +25,16 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      validate(value) {
-        if (!validator.isEmail(value)) {
+
+      valimatches(value) {
+        if (
+          !validator.isEmail(value) &&
+          !validator.isLowercase(value) &&
+          !validator.matches(
+            value,
+            /^[a-zA-Z0-9](.?[a-zA-Z0-9]){5,29}@gmail.com$/
+          )
+        ) {
           throw new Error("Invalid Email Address: " + value);
         }
       },
@@ -50,7 +57,7 @@ const userSchema = new Schema(
       max: 35,
       validate(value) {
         if (
-          // !validator.isInt(value, { min: 18, max: 40 }) &&
+          !validator.isInt(value, { min: 18, max: 40 }) &&
           !validator.isNumeric(value)
         ) {
           throw new Error("Age is Invalid");
