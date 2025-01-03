@@ -10,6 +10,7 @@ app.use(express.json());
 app.post("/signup", async (req, res) => {
   const user = new User(req.body);
   try {
+    console.log(user.skills.length);
     await user.save();
     res.send("data added succesfully");
   } catch (err) {

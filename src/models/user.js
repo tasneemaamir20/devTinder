@@ -85,6 +85,11 @@ const userSchema = new Schema(
     },
     skills: {
       type: [String],
+      validate(value) {
+        if (!(value.length <= 5 && value.length >= 1)) {
+          throw new Error("Insert atleast 1 Skills or Maximum 5");
+        }
+      },
     },
   },
   {
