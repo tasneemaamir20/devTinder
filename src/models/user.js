@@ -26,13 +26,13 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
 
-      valimatches(value) {
+      validate(value) {
         if (
-          !validator.isEmail(value) &&
-          !validator.isLowercase(value) &&
+          // !validator.isEmail(value) &&
+          // !validator.isLowercase(value) &&
           !validator.matches(
             value,
-            /^[a-zA-Z0-9](.?[a-zA-Z0-9]){5,29}@gmail.com$/
+            "^[a-zA-Z0-9](.?[a-zA-Z0-9]){5,29}@gmail.com$"
           )
         ) {
           throw new Error("Invalid Email Address: " + value);
@@ -43,8 +43,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      minLength: 8,
-      maxLength: 18,
       validate(value) {
         if (!validator.isStrongPassword(value)) {
           throw new Error("Invalid Password !!!");
@@ -53,8 +51,6 @@ const userSchema = new Schema(
     },
     age: {
       type: Number,
-      min: 18,
-      max: 35,
       validate(value) {
         if (
           !validator.isInt(value, { min: 18, max: 40 }) &&
