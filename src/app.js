@@ -3,21 +3,51 @@ const connectDB = require("./config/database");
 const app = express();
 //! const { adminAuth,userAuth } = require("./Middlewares/auth.js");
 const User = require("./models/user");
-
+const { validateSignUpData } = require("./utils/validation");
 app.use(express.json());
-
+const bcrypt = require("bcrypt");
 // ! post data to signup user
 app.post("/signup", async (req, res) => {
-  const user = new User(req.body);
   try {
-    console.log(user.skills.length);
+    //! validation of data
+    validateSignUpData(req);
+    const { firstName, lastName, emailId, password } = req.body;
+    //! Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+    console.log(passwordHash);
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
+
     await user.save();
     res.send("data added succesfully");
   } catch (err) {
-    res.status(500).send("Data not added" + err);
+    res.status(500).send("ERROR : " + err.message);
   }
 });
 
+// ! post API for login
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    const user = await User.findOne({ emailId: emailId });
+
+    if (!user) {
+      throw new Error("Invalid credential!!!");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (isPasswordValid) {
+      res.send("Login Succesfull!!");
+    } else {
+      res.send("Invalid credential!!!");
+    }
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
 // ! find the user by id and delete it
 app.delete("/user", async (req, res) => {
   const userId = req.body.userId;
