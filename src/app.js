@@ -4,7 +4,11 @@ const app = express();
 //! const { adminAuth,userAuth } = require("./Middlewares/auth.js");
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
 app.use(express.json());
+app.use(cookieParser());
 const bcrypt = require("bcrypt");
 // ! post data to signup user
 app.post("/signup", async (req, res) => {
@@ -14,7 +18,6 @@ app.post("/signup", async (req, res) => {
     const { firstName, lastName, emailId, password } = req.body;
     //! Encrypt the password
     const passwordHash = await bcrypt.hash(password, 10);
-    console.log(passwordHash);
     const user = new User({
       firstName,
       lastName,
@@ -39,11 +42,32 @@ app.post("/login", async (req, res) => {
       throw new Error("Invalid credential!!!");
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    const isMatching = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
+      // Create the JWT token
+      const token = jwt.sign({ _id: user._id }, "Aamir@Dev$123");
+
+      // Send back the JWT token with cookies with the response
+      res.cookie("token", token);
       res.send("Login Succesfull!!");
     } else {
       res.send("Invalid credential!!!");
+    }
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
+
+// ! get API for getting profile
+app.get("/profile", async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    const { token } = cookies;
+    const iszTokenValid = await jwt.verify(token, "Aamir@Dev$123");
+    if (!iszTokenValid) {
+      res.send("Cookie Expired");
+    } else {
+      console.log(token);
+      res.send("Reading the Cookies");
     }
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
