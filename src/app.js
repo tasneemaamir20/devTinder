@@ -44,7 +44,14 @@ app.post("/login", async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
       // Create the JWT token
-      const token = jwt.sign({ _id: user._id }, "Aamir@Dev$123");
+      // const token = jwt.sign({ _id: user._id }, "Aamir@Dev$123");
+      const token = jwt.sign(
+        {
+          _id: user._id,
+        },
+        "Aamir@Dev$123",
+        { expiresIn: 10 }
+      );
 
       // Send back the JWT token with cookies with the response
       res.cookie("token", token);
@@ -70,9 +77,10 @@ app.get("/profile", async (req, res) => {
       res.send("Reading the Cookies");
     }
   } catch (err) {
-    res.status(400).send("ERROR : " + err.message);
+    res.status(400).send("ERROR in profile : " + err.message);
   }
 });
+
 // ! find the user by id and delete it
 app.delete("/user", async (req, res) => {
   const userId = req.body.userId;
