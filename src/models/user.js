@@ -76,9 +76,8 @@ const userSchema = new Schema(
     about: {
       type: String,
       default: "This is the default String using default feature",
-      maxLength: 100,
       validate(value) {
-        if (!validator.isLength(value, { min: 0, max: 200 })) {
+        if (!validator.isLength(value, { min: 0, max: 500 })) {
           throw new Error("Minimize the About section");
         }
       },

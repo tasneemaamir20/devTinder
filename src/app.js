@@ -1,7 +1,7 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
-//! const { adminAuth,userAuth } = require("./Middlewares/auth.js");
+const { userAuth } = require("./Middlewares/auth.js");
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
 const cookieParser = require("cookie-parser");
@@ -10,12 +10,21 @@ const jwt = require("jsonwebtoken");
 app.use(express.json());
 app.use(cookieParser());
 const bcrypt = require("bcrypt");
-// ! post data to signup user
+// ! POST API  to signup user
 app.post("/signup", async (req, res) => {
   try {
     //! validation of data
     validateSignUpData(req);
-    const { firstName, lastName, emailId, password } = req.body;
+    const {
+      firstName,
+      lastName,
+      emailId,
+      password,
+      gender,
+      skills,
+      about,
+      photoUrl,
+    } = req.body;
     //! Encrypt the password
     const passwordHash = await bcrypt.hash(password, 10);
     const user = new User({
@@ -23,6 +32,10 @@ app.post("/signup", async (req, res) => {
       lastName,
       emailId,
       password: passwordHash,
+      gender,
+      skills,
+      about,
+      photoUrl,
     });
 
     await user.save();
@@ -32,7 +45,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// ! post API for login
+// ! POST API for login
 app.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
@@ -43,15 +56,16 @@ app.post("/login", async (req, res) => {
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
-      // Create the JWT token
-      // const token = jwt.sign({ _id: user._id }, "Aamir@Dev$123");
-      const token = jwt.sign(
-        {
-          _id: user._id,
-        },
-        "Aamir@Dev$123",
-        { expiresIn: 10 }
-      );
+      //? Create the JWT token for infinite time
+      const token = jwt.sign({ _id: user._id }, "Aamir@Dev$123");
+      // ? creating token for a time period
+      // const token = jwt.sign(
+      //   {
+      //     _id: user._id,
+      //   },
+      //   "Aamir@Dev$123",
+      //   { expiresIn: 10 }
+      // );
 
       // Send back the JWT token with cookies with the response
       res.cookie("token", token);
@@ -64,20 +78,23 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// ! get API for getting profile
-app.get("/profile", async (req, res) => {
+// ! GET API for getting profile
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const cookies = req.cookies;
-    const { token } = cookies;
-    const iszTokenValid = await jwt.verify(token, "Aamir@Dev$123");
-    if (!iszTokenValid) {
-      res.send("Cookie Expired");
-    } else {
-      console.log(token);
-      res.send("Reading the Cookies");
-    }
+    const user = req.user;
+    res.send(user);
   } catch (err) {
-    res.status(400).send("ERROR in profile : " + err.message);
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
+
+// ! POST API for Sending Request
+app.post("/sendConnectionRequest", async (req, res) => {
+  try {
+    console.log("Sending a conection request");
+    res.send("Connection Request Send");
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
   }
 });
 
@@ -238,7 +255,7 @@ app.get("/feed", async (req, res) => {
 
 connectDB()
   .then(() => {
-    console.log("Database connection esrtablished successfully");
+    console.log("Database connection established successfully");
     app.listen(3000, () => {
       console.log("server is running on port number 3000");
     });
