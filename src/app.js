@@ -89,7 +89,7 @@ app.get("/profile", userAuth, async (req, res) => {
 });
 
 // ! POST API for Sending Request
-app.post("/sendConnectionRequest", async (req, res) => {
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   try {
     console.log("Sending a conection request");
     res.send("Connection Request Send");
