@@ -91,7 +91,9 @@ app.get("/profile", userAuth, async (req, res) => {
 // ! POST API for Sending Request
 app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   try {
+    const data = req.body;
     console.log("Sending a conection request");
+
     res.send("Connection Request Send");
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
