@@ -3,6 +3,8 @@ const express = require("express");
 
 const { Schema } = require("mongoose");
 var validator = require("validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const app = express();
 
 app.use(express.json());
