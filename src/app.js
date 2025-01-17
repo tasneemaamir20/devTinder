@@ -1,95 +1,18 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
-const { userAuth } = require("./Middlewares/auth.js");
 const User = require("./models/user");
-const { validateSignUpData } = require("./utils/validation");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 app.use(cookieParser());
-const bcrypt = require("bcrypt");
-// ! POST API  to signup user
-app.post("/signup", async (req, res) => {
-  try {
-    //! validation of data
-    validateSignUpData(req);
-    const {
-      firstName,
-      lastName,
-      emailId,
-      password,
-      gender,
-      skills,
-      about,
-      photoUrl,
-    } = req.body;
-    //! Encrypt the password
-    const passwordHash = await bcrypt.hash(password, 10);
-    const user = new User({
-      firstName,
-      lastName,
-      emailId,
-      password: passwordHash,
-      gender,
-      skills,
-      about,
-      photoUrl,
-    });
+const authRouter = require("../routes/auth.js");
+const profileRouter = require("../routes/profile.js");
+const requestRouter = require("../routes/requests.js");
 
-    await user.save();
-    res.send("data added succesfully");
-  } catch (err) {
-    res.status(500).send("ERROR : " + err.message);
-  }
-});
-
-// ! POST API for login
-app.post("/login", async (req, res) => {
-  try {
-    const { emailId, password } = req.body;
-    const user = await User.findOne({ emailId: emailId });
-
-    if (!user) {
-      throw new Error("Invalid credential!!!");
-    }
-    const isPasswordValid = await user.validatePassword(password);
-    if (isPasswordValid) {
-      // Create the JWT token
-      const token = await user.getJWT();
-
-      // Send back the JWT token with cookies with the response
-      res.cookie("token", token, { expires: new Date(Date.now() + 900000) });
-      res.send("Login Succesfull!!");
-    } else {
-      res.send("Invalid credential!!!");
-    }
-  } catch (err) {
-    res.status(400).send("ERROR : " + err.message);
-  }
-});
-
-// ! GET API for getting profile
-app.get("/profile", userAuth, async (req, res) => {
-  try {
-    const user = req.user;
-    res.send(user);
-  } catch (err) {
-    res.status(400).send("ERROR : " + err.message);
-  }
-});
-
-// ! POST API for Sending Request
-app.post("/sendConnectionRequest", userAuth, async (req, res) => {
-  try {
-    console.log("Sending a conection request");
-
-    res.send("Connection Request Send");
-  } catch (err) {
-    res.status(400).send("ERROR : " + err.message);
-  }
-});
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
 
 // ! find the user by id and delete it
 app.delete("/user", async (req, res) => {
