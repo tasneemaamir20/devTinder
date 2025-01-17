@@ -54,21 +54,13 @@ app.post("/login", async (req, res) => {
     if (!user) {
       throw new Error("Invalid credential!!!");
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password);
     if (isPasswordValid) {
-      //? Create the JWT token for infinite time
-      const token = jwt.sign({ _id: user._id }, "Aamir@Dev$123");
-      // ? creating token for a time period
-      // const token = jwt.sign(
-      //   {
-      //     _id: user._id,
-      //   },
-      //   "Aamir@Dev$123",
-      //   { expiresIn: 10 }
-      // );
+      // Create the JWT token
+      const token = await user.getJWT();
 
       // Send back the JWT token with cookies with the response
-      res.cookie("token", token);
+      res.cookie("token", token, { expires: new Date(Date.now() + 900000) });
       res.send("Login Succesfull!!");
     } else {
       res.send("Invalid credential!!!");
@@ -91,7 +83,6 @@ app.get("/profile", userAuth, async (req, res) => {
 // ! POST API for Sending Request
 app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   try {
-    const data = req.body;
     console.log("Sending a conection request");
 
     res.send("Connection Request Send");
