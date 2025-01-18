@@ -14,6 +14,26 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 
+
+
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+// .
+
 // ! find the user by id and delete it
 app.delete("/user", async (req, res) => {
   const userId = req.body.userId;

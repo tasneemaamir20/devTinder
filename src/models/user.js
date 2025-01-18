@@ -53,14 +53,14 @@ const userSchema = new Schema(
     },
     age: {
       type: Number,
-      validate(value) {
-        if (
-          !validator.isInt(value, { min: 18, max: 40 }) &&
-          !validator.isNumeric(value)
-        ) {
-          throw new Error("Age is Invalid");
-        }
-      },
+      // validate(value) {
+      //   if (
+      //     !validator.isInt(value, { min: 18, max: 40 }) &&
+      //     !validator.isNumeric(value)
+      //   ) {
+      //     throw new Error("Age is Invalid");
+      //   }
+      // },
     },
     gender: {
       type: String,

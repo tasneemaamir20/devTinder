@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../src/models/user");
 const { validateSignUpData } = require("../src/utils/validation");
+const { userAuth } = require("../src/Middlewares/auth");
 
 // ! POST API  to signup user
 authRouter.post("/signup", async (req, res) => {
@@ -64,5 +65,13 @@ authRouter.post("/login", async (req, res) => {
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
+});
+
+//! API for logout
+authRouter.post("/logout", userAuth, async (req, res) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  });
+  res.send("Logout successfull");
 });
 module.exports = authRouter;
