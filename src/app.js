@@ -3,18 +3,16 @@ const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 const cookieParser = require("cookie-parser");
+const requestRouter = require("./routes/requests");
+const profileRouter = require("./routes/profile");
+const authRouter = require("./routes/auth");
 
 app.use(express.json());
 app.use(cookieParser());
-const authRouter = require("../routes/auth.js");
-const profileRouter = require("../routes/profile.js");
-const requestRouter = require("../routes/requests.js");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
-
-
 
 // .
 // .

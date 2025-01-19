@@ -3,9 +3,9 @@ const express = require("express");
 const authRouter = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../src/models/user");
-const { validateSignUpData } = require("../src/utils/validation");
-const { userAuth } = require("../src/Middlewares/auth");
+const User = require("../models/user");
+const { validateSignUpData } = require("../utils/validation");
+const { userAuth } = require("../Middlewares/auth");
 
 // ! POST API  to signup user
 authRouter.post("/signup", async (req, res) => {

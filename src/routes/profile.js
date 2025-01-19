@@ -1,9 +1,9 @@
 const express = require("express");
 
 const profileRouter = express.Router();
-const { userAuth } = require("../src/Middlewares/auth.js");
-const User = require("../src/models/user");
-const { validateEditProfileData } = require("../src/utils/validation.js");
+const { userAuth } = require("../Middlewares/auth.js");
+const User = require("../models/user");
+const { validateEditProfileData } = require("../utils/validation.js");
 const bcrypt = require("bcrypt");
 
 // ! GET API for getting profile
@@ -35,15 +35,14 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     res.status(400).send("ERROR profile : " + err.message);
   }
 });
-profileRouter.patch("/profile/password", userAuth, async (req, res) => {
+profileRouter.patch("/profile/changePassword", userAuth, async (req, res) => {
   try {
-    const newPassword = req.user;
-    const passwordHash = await bcrypt.hash(req.body.password, 10);
-    newPassword.password = passwordHash;
-    await newPassword.save();
+    const LoggedInUser = req.user;
+    LoggedInUser.password = await bcrypt.hash(req.body.password, 10);
+    await LoggedInUser.save();
     res.json({
       message: `password Changed Successfull !!!`,
-      data: newPassword,
+      data: LoggedInUser,
     });
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
