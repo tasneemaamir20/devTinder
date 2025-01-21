@@ -20,6 +20,12 @@ requestRouter.post(
           message: "Invalid status type" + status,
         });
       }
+      //  if the user is not found in our DB
+      const toUser = await User.findById(toUserId);
+      if (!toUser) {
+        res.status(404).json({ message: "User not found!!" });
+      }
+
       //  If there is an existing connectionRequest
       const existingConnectionRequest = await ConnectionRequest.findOne({
         $or: [
@@ -40,7 +46,8 @@ requestRouter.post(
 
       const data = await connectionRequest.save();
       res.json({
-        message: "connection request send successfully !!",
+        // message: "connection request send successfully !!",
+        message: req.user.firstName + "is" + status + "in" + toUser.firstName,
         data: connectionRequest,
       });
     } catch (err) {
