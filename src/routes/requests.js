@@ -67,28 +67,24 @@ requestRouter.post(
 
       const allowedStatus = ["acccepted", "rejected"];
       if (!allowedStatus.includes(status)) {
-        res.status(400).json({
-          message: "Invalid status type" + status,
-        });
+        return res
+          .status(400)
+          .json({ message: "Invalid Status Type : " + status });
       }
-
       const connectionRequest = await ConnectionRequest.findOne({
         _id: requestId,
-        toUserId: loggedInUser._id,
         status: "intrested",
+        toUserId: loggedInUser._id,
       });
 
       if (!connectionRequest) {
-        return res
-          .status(404)
-          .json({ message: "Connection request not found" });
+        return res.status(404).json({ message: "User not Found" });
       }
-
       connectionRequest.status = status;
       const data = await connectionRequest.save();
-      res.json({ message: "Connection request " + status, data });
+      res.json({ message: "Connection Request : " + status, data });
     } catch (err) {
-      res.status(400).send("ERROR status : " + err.message);
+      res.status(400).json({ message: "ERROR : " + err.message });
     }
   }
 );
