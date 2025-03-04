@@ -78,7 +78,9 @@ requestRouter.post(
       });
 
       if (!connectionRequest) {
-        return res.status(404).json({ message: "User not Found" });
+        return res
+          .status(404)
+          .json({ message: "Connection request not Found" });
       }
       connectionRequest.status = status;
       const data = await connectionRequest.save();
