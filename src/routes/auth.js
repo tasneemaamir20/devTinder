@@ -34,7 +34,7 @@ authRouter.post("/signup", async (req, res) => {
       about,
       photoUrl,
     });
-
+    console.log(req.body);
     await user.save();
     res.send("data added succesfully");
   } catch (err) {
